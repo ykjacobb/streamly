@@ -32,11 +32,6 @@ const sidebarItems = [
     label: "Library",
     href: "/library",
   },
-  {
-    icon: Settings,
-    label: "Settings",
-    href: "/settings",
-  },
 ];
 
 interface SidebarProps {
