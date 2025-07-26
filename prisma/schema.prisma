@@ -10,13 +10,13 @@ generator client {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String?   @unique
+  emailVerified DateTime?
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  clipSources   ClipSource[]
+  streamers     Streamer[]
 }
 
 model Account {
@@ -53,4 +53,34 @@ model VerificationToken {
   type       String   @db.VarChar(32)
 
   @@id([identifier, token])
+}
+
+model ClipSource {
+  id        String   @id @default(cuid())
+  userId    String
+  platform  String
+  page      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Streamer {
+  id        String   @id @default(cuid())
+  userId    String
+  platform  String   // 'twitch', 'youtube', etc.
+  username  String
+  isLive    Boolean  @default(false)
+  lastCheck DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([platform, username])
+  @@unique([userId, platform, username])
 } 
