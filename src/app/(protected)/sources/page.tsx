@@ -34,11 +34,15 @@ export default async function SourcesPage() {
             <h2 className="text-3xl font-bold">Current followed sources</h2>
 
             <Suspense fallback={<SourcesLoading />}>
-                {/* @ts-expect-error Async Server Component */}
-                <SourcesList userId={session.user.id} />
+                <SourcesListWrapper userId={session.user.id} />
             </Suspense>
         </div>
     );
+}
+
+// Wrapper component to handle the async component type correctly
+function SourcesListWrapper({ userId }: { userId: string }) {
+    return <SourcesList userId={userId} />;
 }
 
 async function SourcesList({ userId }: { userId: string }) {

@@ -70,11 +70,15 @@ export default async function StreamersPage() {
             </div>
 
             <Suspense fallback={<StreamersLoading />}>
-                {/* @ts-expect-error Async Server Component */}
-                <StreamersContent userId={session.user.id} />
+                <StreamersContentWrapper userId={session.user.id} />
             </Suspense>
         </div>
     );
+}
+
+// Wrapper component to handle the async component type correctly
+function StreamersContentWrapper({ userId }: { userId: string }) {
+    return <StreamersContent userId={userId} />;
 }
 
 async function StreamersContent({ userId }: { userId: string }) {
