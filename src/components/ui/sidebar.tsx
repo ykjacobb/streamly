@@ -150,7 +150,7 @@ export function Sidebar({ userEmail }: SidebarProps) {
                                     <TooltipContent 
                                         side="right" 
                                         className={cn(
-                                            "bg-black text-white dark:bg-white dark:text-black",
+                                            "bg-zinc-900 border text-white rounded-full px-3 py-1 text-sm",
                                             (!isCollapsed && !isMobile) && "hidden"
                                         )}
                                     >
