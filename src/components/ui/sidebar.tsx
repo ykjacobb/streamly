@@ -69,10 +69,10 @@ export function Sidebar({ userEmail }: SidebarProps) {
 
                 {/* Navigation */}
                 <nav className="flex-1 p-2 relative">
-                    {/* Active tab indicator */}
+                    {/* Active tab indicator - blue line */}
                     <div
-                        className="absolute left-2 right-2 h-10 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800 transition-transform duration-300 ease-out"
-                        style={{ transform: `translateY(${activeTabPosition}px)` }}
+                        className="absolute left-0 w-1 h-8 bg-blue-600 rounded-r-full transition-transform duration-300 ease-out"
+                        style={{ transform: `translateY(${activeTabPosition + 4}px)` }}
                     />
 
                     {sidebarItems.map((item) => {
@@ -83,11 +83,11 @@ export function Sidebar({ userEmail }: SidebarProps) {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "relative flex items-center h-10 space-x-3 px-3 mb-1 rounded-lg transition-colors duration-300",
+                                    "relative flex items-center h-10 space-x-3 px-3 mb-1 rounded-lg transition-colors duration-300 transition-all",
                                     "group z-10",
                                     isActive
-                                        ? "text-black dark:text-white"
-                                        : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+                                        ? "text-blue-600 dark:text-blue-400 duration-300 transition-all"
+                                        : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white duration-300 transition-all"
                                 )}
                             >
                                 <Icon className="h-5 w-5" />
