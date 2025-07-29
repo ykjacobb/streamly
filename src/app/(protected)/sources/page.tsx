@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import AddSourceForm from "./_components/add-source-form";
 import SourceItem from "./_components/source-item";
 import { headers } from "next/headers";
+import { Suspense } from "react";
+import SourcesLoading from "./loading";
 
 type ClipSource = {
     id: string;
@@ -23,12 +25,6 @@ export default async function SourcesPage() {
     const session = sessionRes?.user ? { user: sessionRes.user } : null;
     if (!session?.user?.id) return null;
 
-    // @ts-ignore prisma client typing generated
-    const sources: ClipSource[] = await prisma.clipSource.findMany({
-        where: { userId: session.user.id },
-        orderBy: { createdAt: "desc" }
-    });
-
     return (
         <div className="p-6 max-w-2xl mx-auto space-y-8">
             <h1 className="text-3xl font-bold">Your Clip Sources</h1>
@@ -37,18 +33,33 @@ export default async function SourcesPage() {
 
             <h2 className="text-3xl font-bold">Current followed sources</h2>
 
-            <ul className="space-y-2">
-                {sources.map((source) => (
-                    <SourceItem
-                        key={source.id}
-                        source={source}
-                        userId={session.user.id}
-                    />
-                ))}
-                {sources.length === 0 && (
-                    <li className="text-gray-500 text-center py-8">No sources added yet.</li>
-                )}
-            </ul>
+            <Suspense fallback={<SourcesLoading />}>
+                {/* @ts-expect-error Async Server Component */}
+                <SourcesList userId={session.user.id} />
+            </Suspense>
         </div>
+    );
+}
+
+async function SourcesList({ userId }: { userId: string }) {
+    // @ts-ignore prisma client typing generated
+    const sources: ClipSource[] = await prisma.clipSource.findMany({
+        where: { userId },
+        orderBy: { createdAt: "desc" }
+    });
+
+    return (
+        <ul className="space-y-2">
+            {sources.map((source) => (
+                <SourceItem
+                    key={source.id}
+                    source={source}
+                    userId={userId}
+                />
+            ))}
+            {sources.length === 0 && (
+                <li className="text-gray-500 text-center py-8">No sources added yet.</li>
+            )}
+        </ul>
     );
 }

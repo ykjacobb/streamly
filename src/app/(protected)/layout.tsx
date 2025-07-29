@@ -28,7 +28,7 @@ export default function ProtectedLayout({
             </div>
 
             {/* Main content - adjust padding bottom on mobile for nav bar */}
-            <div className="flex-1 md:p-3 pb-[76px] md:pb-3">
+            <div className="flex-1 md:pt-3 md:pb-3 md:pr-3 pb-[76px] md:pb-3">
                 <div className="h-full md:rounded-xl md:border md:border-gray-200 md:dark:border-gray-800 bg-white dark:bg-black">
                     <div className="h-full overflow-auto px-2 py-2 md:p-4">{children}</div>
                 </div>

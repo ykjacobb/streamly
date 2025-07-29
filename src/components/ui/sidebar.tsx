@@ -7,11 +7,19 @@ import {
     BookSolid,
     Settings,
     FlashSolid,
-    PlaySolid
+    PlaySolid,
+    NavArrowLeft,
+    NavArrowRight
 } from "iconoir-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const sidebarItems = [
     {
@@ -48,6 +56,19 @@ interface SidebarProps {
 export function Sidebar({ userEmail }: SidebarProps) {
     const pathname = usePathname();
     const [activeTabPosition, setActiveTabPosition] = useState(0);
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         const activeIndex = sidebarItems.findIndex((item) => pathname.startsWith(item.href));
@@ -58,61 +79,97 @@ export function Sidebar({ userEmail }: SidebarProps) {
     }, [pathname]);
 
     return (
-        <div className="w-16 md:w-60 bg-gray-100 dark:bg-zinc-900">
-            <div className="flex flex-col h-full">
-                {/* Logo area */}
-                <div className="h-16 flex items-center justify-center md:justify-start px-4">
-                    <span className="hidden md:block font-bold text-xl text-black dark:text-white">
-                        real.kit
-                    </span>
-                </div>
+        <TooltipProvider>
+            <div 
+                className={cn(
+                    "transition-all duration-300 ease-in-out bg-gray-100 dark:bg-zinc-900",
+                    isCollapsed ? "w-16" : "w-16 md:w-60"
+                )}
+            >
+                <div className="flex flex-col h-full">
+                    {/* Logo area */}
+                    <div className="h-16 flex items-center justify-between px-4">
+                        <span className={cn(
+                            "font-bold text-xl text-black dark:text-white transition-opacity duration-300",
+                            isCollapsed ? "hidden" : "hidden md:block"
+                        )}>
+                            real.kit
+                        </span>
+                        <button
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                            className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
+                        >
+                            {isCollapsed ? (
+                                <NavArrowRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                            ) : (
+                                <NavArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                            )}
+                        </button>
+                    </div>
 
-                {/* Navigation */}
-                <nav className="flex-1 p-2 relative">
-                    {/* Active tab indicator - blue line */}
-                    <div
-                        className="absolute left-0 w-1 h-8 bg-blue-600 rounded-r-full transition-transform duration-300 ease-out"
-                        style={{ transform: `translateY(${activeTabPosition + 4}px)` }}
-                    />
+                    {/* Navigation */}
+                    <nav className="flex-1 p-2 relative">
+                        {/* Active tab indicator - blue line */}
+                        <div
+                            className="absolute left-0 w-1 h-8 bg-blue-600 rounded-r-full transition-transform duration-300 ease-out"
+                            style={{ transform: `translateY(${activeTabPosition + 4}px)` }}
+                        />
 
-                    {sidebarItems.map((item) => {
-                        const isActive = pathname.startsWith(item.href);
-                        const Icon = item.icon;
-                        return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={cn(
-                                    "relative flex items-center h-10 space-x-3 px-3 mb-1 rounded-lg transition-colors duration-300 transition-all",
-                                    "group z-10",
-                                    isActive
-                                        ? "text-blue-600 dark:text-blue-400 duration-300 transition-all"
-                                        : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white duration-300 transition-all"
-                                )}
-                            >
-                                <Icon className="h-5 w-5" />
-                                <span className="hidden md:block">{item.label}</span>
-                                {/* Tooltip for mobile */}
-                                <span className="md:hidden absolute left-14 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {item.label}
-                                </span>
-                            </Link>
-                        );
-                    })}
-                </nav>
+                        {sidebarItems.map((item) => {
+                            const isActive = pathname.startsWith(item.href);
+                            const Icon = item.icon;
+                            return (
+                                <Tooltip key={item.href} delayDuration={0}>
+                                    <TooltipTrigger asChild>
+                                        <Link
+                                            href={item.href}
+                                            className={cn(
+                                                "relative flex items-center h-10 space-x-3 px-3 mb-1 rounded-lg transition-colors duration-300",
+                                                "group z-10",
+                                                isActive
+                                                    ? "text-blue-600 dark:text-blue-400"
+                                                    : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+                                            )}
+                                        >
+                                            <Icon className="h-5 w-5 flex-shrink-0" />
+                                            <span className={cn(
+                                                "transition-opacity duration-300",
+                                                isCollapsed ? "hidden" : "hidden md:block"
+                                            )}>
+                                                {item.label}
+                                            </span>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent 
+                                        side="right" 
+                                        className={cn(
+                                            "bg-black text-white dark:bg-white dark:text-black",
+                                            (!isCollapsed && !isMobile) && "hidden"
+                                        )}
+                                    >
+                                        {item.label}
+                                    </TooltipContent>
+                                </Tooltip>
+                            );
+                        })}
+                    </nav>
 
-                {/* User area */}
-                <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-                    <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-white dark:bg-black" />
-                        <div className="hidden md:block">
-                            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                {userEmail}
+                    {/* User area */}
+                    <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-full bg-white dark:bg-black flex-shrink-0" />
+                            <div className={cn(
+                                "transition-opacity duration-300",
+                                isCollapsed ? "hidden" : "hidden md:block"
+                            )}>
+                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    {userEmail}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </TooltipProvider>
     );
 }
