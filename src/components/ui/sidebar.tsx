@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
     HomeSimpleDoor,
     CameraSolid,
@@ -82,29 +83,34 @@ export function Sidebar({ userEmail }: SidebarProps) {
         <TooltipProvider>
             <div 
                 className={cn(
-                    "transition-all duration-300 ease-in-out bg-gray-100 dark:bg-zinc-900",
+                    "transition-all duration-300 ease-in-out bg-gray-100 dark:bg-zinc-900 h-full",
                     isCollapsed ? "w-16" : "w-16 md:w-60"
                 )}
             >
                 <div className="flex flex-col h-full">
                     {/* Logo area */}
-                    <div className="h-16 flex items-center justify-between px-4">
-                        <span className={cn(
-                            "font-bold text-xl text-black dark:text-white transition-opacity duration-300",
-                            isCollapsed ? "hidden" : "hidden md:block"
-                        )}>
-                            real.kit
-                        </span>
-                        <button
-                            onClick={() => setIsCollapsed(!isCollapsed)}
-                            className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
-                        >
-                            {isCollapsed ? (
-                                <NavArrowRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                            ) : (
-                                <NavArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                            )}
-                        </button>
+                    <div className="h-24 flex items-center justify-center">
+                        {isCollapsed || isMobile ? (
+                            <Image
+                                src="/streamly-icon.png"
+                                alt="Streamly"
+                                width={40}
+                                height={40}
+                                className="dark:invert select-none"
+                                draggable={false}
+                            />
+                        ) : (
+                            <div className="hidden md:block">
+                                <Image
+                                    src="/streamly.png"
+                                    alt="Streamly"
+                                    width={180}
+                                    height={60}
+                                    className="dark:invert select-none"
+                                    draggable={false}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Navigation */}
@@ -124,7 +130,8 @@ export function Sidebar({ userEmail }: SidebarProps) {
                                         <Link
                                             href={item.href}
                                             className={cn(
-                                                "relative flex items-center h-10 space-x-3 px-3 mb-1 rounded-lg transition-colors duration-300",
+                                                "relative flex items-center h-10 mb-1 rounded-lg transition-colors duration-300",
+                                                isCollapsed || isMobile ? "justify-center" : "space-x-3 px-3",
                                                 "group z-10",
                                                 isActive
                                                     ? "text-blue-600 dark:text-blue-400"
@@ -154,16 +161,33 @@ export function Sidebar({ userEmail }: SidebarProps) {
                         })}
                     </nav>
 
-                    {/* User area */}
-                    <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-white dark:bg-black flex-shrink-0" />
-                            <div className={cn(
-                                "transition-opacity duration-300",
-                                isCollapsed ? "hidden" : "hidden md:block"
-                            )}>
-                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {userEmail}
+                    {/* Bottom section: collapse button above account */}
+                    <div className="mt-auto border-t border-gray-200 dark:border-gray-800 flex flex-col">
+                        {/* Collapse button */}
+                        <div className="p-2">
+                            <button
+                                onClick={() => setIsCollapsed(!isCollapsed)}
+                                className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
+                            >
+                                {isCollapsed ? (
+                                    <NavArrowRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                                ) : (
+                                    <NavArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                                )}
+                            </button>
+                        </div>
+
+                        {/* Account info */}
+                        <div className="p-4">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 rounded-full bg-white dark:bg-black flex-shrink-0" />
+                                <div className={cn(
+                                    "transition-opacity duration-300",
+                                    isCollapsed ? "hidden" : "hidden md:block"
+                                )}>
+                                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        {userEmail}
+                                    </div>
                                 </div>
                             </div>
                         </div>
