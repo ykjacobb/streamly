@@ -1,88 +1,79 @@
+"use client";
+
 import { LayoutDashboard, Library } from "lucide-react";
 import { Suspense } from "react";
 import DashboardLoading from "./loading";
+import { useSession } from "@/lib/auth-client";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+    const { data: session } = useSession();
+    const userName = session?.user?.name || "User";
+    const router = useRouter();
+
     return (
         <Suspense fallback={<DashboardLoading />}>
-            <div className="rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700">
-                <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    {/* Stats Cards */}
-                    <div className="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-                        <div className="flex items-center">
-                            <div className="h-8 w-8 rounded-full bg-blue-100 p-2 dark:bg-blue-900">
-                                <LayoutDashboard className="h-4 w-4 text-blue-600 dark:text-blue-300" />
-                            </div>
-                            <div className="ml-4">
-                                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                    Total Projects
-                                </h3>
-                                <p className="text-xl font-semibold text-gray-900 dark:text-white">
-                                    12
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-                        <div className="flex items-center">
-                            <div className="h-8 w-8 rounded-full bg-green-100 p-2 dark:bg-green-900">
-                                <Library className="h-4 w-4 text-green-600 dark:text-green-300" />
-                            </div>
-                            <div className="ml-4">
-                                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                    Library Items
-                                </h3>
-                                <p className="text-xl font-semibold text-gray-900 dark:text-white">
-                                    48
-                                </p>
-                            </div>
-                        </div>
+            <div className="rounded-lg mt-12">
+                <div className="mb-6">
+                    <div className="flex flex-col items-center justify-center">
+                        <h1 className="text-3xl font-semibold">
+                            Welcome back
+                        </h1>
+                        <p className="text-muted-foreground mt-2 mb-12 text-xl">
+                            {userName}
+                        </p>
                     </div>
                 </div>
 
-                {/* Recent Activity */}
-                <div className="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-                    <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                        Recent Activity
-                    </h2>
-                    <div className="flow-root">
-                        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                            <li className="py-3">
-                                <div className="flex items-center space-x-4">
-                                    <div className="flex-shrink-0">
-                                        <div className="h-8 w-8 rounded-full bg-purple-100 p-2 dark:bg-purple-900">
-                                            <Library className="h-4 w-4 text-purple-600 dark:text-purple-300" />
-                                        </div>
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                            Added new item to library
-                                        </p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            2 hours ago
-                                        </p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="py-3">
-                                <div className="flex items-center space-x-4">
-                                    <div className="flex-shrink-0">
-                                        <div className="h-8 w-8 rounded-full bg-blue-100 p-2 dark:bg-blue-900">
-                                            <LayoutDashboard className="h-4 w-4 text-blue-600 dark:text-blue-300" />
-                                        </div>
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                            Updated profile settings
-                                        </p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            1 day ago
-                                        </p>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="rounded-xl bg-gray-100 p-2 border dark:bg-zinc-900/50">
+                        <div className="flex items-center gap-4">
+                            <Image
+                                src="/streamers-page.png"
+                                alt="Total Projects"
+                                quality={100}
+                                width={1000}
+                                height={1000}
+                                className="h-[200px] border w-[200px] rounded-lg select-none drag-none"
+                            />
+                            <div>
+                                <h2 className="text-2xl font-semibold">
+                                    Manage Streamers
+                                </h2>
+                                <p className="text-muted-foreground mt-2 text-lg">
+                                    Add your streamers to monitor when they are live.
+                                </p>
+                                <button onClick={() => router.push("/streamers")} className="hover:opacity-60 cursor-pointer duration-300 rounded-lg mt-6 text-lg font-medium text-white px-5 py-2 bg-blue-600">
+                                    Add Streamer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-xl bg-gray-100 p-2 border dark:bg-zinc-900/50">
+                        <div className="flex items-center gap-4">
+                            <Image
+                                src="/sources-page.png"
+                                alt="Sources"
+                                quality={100}
+                                width={1000}
+                                height={1000}
+                                className="h-[200px] border w-[200px] rounded-lg select-none drag-none"
+                            />
+                            <div>
+                                <h2 className="text-2xl font-semibold">
+                                    Find Clips
+                                </h2>
+                                <p className="text-muted-foreground mt-2 text-lg">
+                                    Get clips from pages and post.
+                                </p>
+                                <button onClick={() => router.push("/sources")} className="hover:opacity-60 cursor-pointer duration-300 rounded-lg mt-6 text-lg font-medium text-white px-5 py-2 bg-blue-600">
+                                    Find Clips
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
