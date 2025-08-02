@@ -36,7 +36,7 @@ export default async function SourcesPage() {
 
             <AddSourceForm />
 
-            <h2 className="text-xl font-semibold mb-4">Current followed sources</h2>
+            <h2 className="text-2xl font-medium mb-4">Current followed sources</h2>
 
             <Suspense fallback={<SourcesLoading />}>
                 <SourcesListWrapper userId={session.user.id} />
