@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Platform, SocialAccountData, addSocialAccount } from "@/lib/actions/social-account";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
 const PLATFORMS: { value: Platform; label: string }[] = [
@@ -53,9 +53,19 @@ export function AddAccountForm({ onAdd }: { onAdd: () => void }) {
                     <Select
                         value={platform}
                         onValueChange={(value) => setPlatform(value as Platform)}
-                        options={PLATFORMS}
                         disabled={isLoading}
-                    />
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select a platform" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {PLATFORMS.map((platform) => (
+                                <SelectItem key={platform.value} value={platform.value}>
+                                    {platform.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div>
