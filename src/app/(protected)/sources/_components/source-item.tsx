@@ -23,7 +23,7 @@ type SourceItemProps = {
 
 export default function SourceItem({ source, userId }: SourceItemProps) {
     return (
-        <li className="rounded-md border p-3 flex items-center justify-between bg-white dark:bg-gray-800">
+        <li className="rounded-md border p-3 flex items-center justify-between bg-gray-100 dark:bg-zinc-900">
             <div className="flex items-center gap-3">
                 <SocialIcon
                     network={source.platform.toLowerCase()}

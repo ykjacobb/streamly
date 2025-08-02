@@ -46,7 +46,7 @@ export default function AddSourceForm() {
                     value={platform}
                     onValueChange={setPlatform}
                 >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full bg-gray-100 dark:bg-zinc-900 border">
                         <SelectValue placeholder="Select a platform">
                             {selectedPlatform && (
                                 <div className="flex items-center gap-2">
@@ -59,12 +59,12 @@ export default function AddSourceForm() {
                             )}
                         </SelectValue>
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-gray-100 dark:bg-zinc-900">
                         {platforms.map((platform) => (
                             <SelectItem
                                 key={platform.id}
                                 value={platform.id}
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-zinc-800"
                             >
                                 <div className="flex items-center gap-2">
                                     <SocialIcon
@@ -100,7 +100,7 @@ export default function AddSourceForm() {
                     <input
                         value={page}
                         onChange={(e) => setPage(e.target.value)}
-                        className={`w-full rounded-md text-sm border px-3 py-1.5 ${selectedPlatform ? "pl-10" : ""}`}
+                        className={`w-full rounded-lg h-9 text-sm border px-3 py-1.5 ${selectedPlatform ? "pl-10" : ""}`}
                         placeholder={selectedPlatform ? `${selectedPlatform.url}/...` : "Enter URL"}
                         required
                     />

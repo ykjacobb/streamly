@@ -87,8 +87,8 @@ export default function EditorPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold">Video Editor</h1>
-                <p className="text-gray-500 dark:text-gray-400">
+                <h1 className="text-2xl font-medium">Video Editor</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">
                     Upload a video and trim it to your desired length.
                 </p>
             </div>

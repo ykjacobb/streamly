@@ -26,12 +26,17 @@ export default async function SourcesPage() {
     if (!session?.user?.id) return null;
 
     return (
-        <div className="space-y-8">
-            <h1 className="text-2xl font-bold">Your Clip Sources</h1>
+        <div className="space-y-6">
+            <div>
+            <h1 className="text-2xl font-medium">Your Clip Sources</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">
+                Automatically find clips from your favorite page sources.
+            </p>
+            </div>
 
             <AddSourceForm />
 
-            <h2 className="text-3xl font-bold">Current followed sources</h2>
+            <h2 className="text-xl font-semibold mb-4">Current followed sources</h2>
 
             <Suspense fallback={<SourcesLoading />}>
                 <SourcesListWrapper userId={session.user.id} />

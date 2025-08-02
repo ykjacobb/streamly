@@ -11,8 +11,8 @@ export default async function LibraryPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold">Your Library</h1>
-                <p className="text-gray-500 dark:text-gray-400">
+                <h1 className="text-2xl font-medium">Your Library</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">
                     View and manage your saved clips and highlights.
                 </p>
             </div>

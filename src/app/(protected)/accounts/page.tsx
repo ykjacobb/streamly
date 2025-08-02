@@ -28,7 +28,7 @@ export default function AccountsPage() {
 
     if (isLoading) {
         return (
-            <div className="container space-y-8">
+            <div className="container space-y-6">
                 <div className="h-8 w-48 bg-muted animate-pulse rounded" />
                 <div className="h-64 bg-muted animate-pulse rounded-lg" />
                 <div className="h-96 bg-muted animate-pulse rounded-lg" />
@@ -37,9 +37,9 @@ export default function AccountsPage() {
     }
 
     return (
-        <div className="container space-y-8">
+        <div className="container space-y-6">
             <div>
-                <h1 className="text-3xl font-bold">Social Media Accounts</h1>
+                <h1 className="text-2xl font-medium">Social Media Accounts</h1>
                 <p className="text-muted-foreground mt-2">
                     Manage your connected social media accounts
                 </p>

@@ -74,10 +74,10 @@ export default function WatermarkPage() {
     };
 
     return (
-        <div className="container space-y-8">
+        <div className="container space-y-6">
             <div>
-                <h1 className="text-3xl font-bold">Video Watermark Tool</h1>
-                <p className="text-muted-foreground mt-2">
+                <h1 className="text-2xl font-medium">Video Watermark Tool</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">
                     Add a watermark to your 16:9 video with customizable position and opacity
                 </p>
             </div>

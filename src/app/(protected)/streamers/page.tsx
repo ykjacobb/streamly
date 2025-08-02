@@ -63,8 +63,8 @@ export default async function StreamersPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold">Streamers</h1>
-                <p className="text-gray-500 dark:text-gray-400">
+                <h1 className="text-2xl font-medium">Streamers</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">
                     Manage your favorite streamers and see who's live.
                 </p>
             </div>
