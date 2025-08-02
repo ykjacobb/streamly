@@ -1,5 +1,4 @@
 import { Inter } from "next/font/google";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -27,9 +26,7 @@ export default function RootLayout({
                     defaultTheme="system"
                     enableSystem
                 >
-                    <div className="fixed top-4 right-4 z-50">
-                        <ThemeToggle />
-                    </div>
+                    {/* Theme toggle moved to settings page */}
                     {children}
                 </ThemeProvider>
             </body>

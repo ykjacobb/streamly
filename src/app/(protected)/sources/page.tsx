@@ -26,8 +26,8 @@ export default async function SourcesPage() {
     if (!session?.user?.id) return null;
 
     return (
-        <div className="p-6 max-w-2xl mx-auto space-y-8">
-            <h1 className="text-3xl font-bold">Your Clip Sources</h1>
+        <div className="space-y-8">
+            <h1 className="text-2xl font-bold">Your Clip Sources</h1>
 
             <AddSourceForm />
 

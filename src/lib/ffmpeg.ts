@@ -101,3 +101,107 @@ export async function trimVideo(inputFile: File, options: TrimOptions): Promise<
     // Convert the output to a Blob
     return new Blob([outputData], { type: "video/mp4" });
 }
+
+interface WatermarkOptions {
+    position: {
+        x: number;
+        y: number;
+    };
+    opacity: number;
+}
+
+export async function applyWatermark(
+    videoFile: File,
+    watermarkFile: File,
+    options: WatermarkOptions
+): Promise<Blob> {
+    const ffmpeg = await getFFmpeg();
+
+    try {
+        // Write input files to FFmpeg's virtual filesystem
+        await ffmpeg.writeFile("input.mp4", new Uint8Array(await videoFile.arrayBuffer()));
+        await ffmpeg.writeFile("watermark.png", new Uint8Array(await watermarkFile.arrayBuffer()));
+
+        // Get video dimensions first
+        const args1 = [
+            "-i", "input.mp4",
+            "-v", "error",
+            "-select_streams", "v:0",
+            "-show_entries", "stream=width,height",
+            "-of", "csv=s=x:p=0",
+        ];
+        
+        await ffmpeg.exec(args1);
+        const dimensionsData = await ffmpeg.readFile("out.txt");
+        const dimensions = new TextDecoder().decode(dimensionsData).trim().split('x');
+        const videoWidth = parseInt(dimensions[0]);
+        const videoHeight = parseInt(dimensions[1]);
+
+        // Validate 16:9 aspect ratio
+        const aspectRatio = videoWidth / videoHeight;
+        const targetRatio = 16 / 9;
+        const tolerance = 0.01; // 1% tolerance
+
+        if (Math.abs(aspectRatio - targetRatio) > tolerance) {
+            throw new Error("Video must have a 16:9 aspect ratio");
+        }
+
+        // Calculate watermark size and position
+        const watermarkWidth = Math.round(videoWidth * 0.3); // 30% of video width
+        const xPos = Math.round((videoWidth * options.position.x / 100) - (watermarkWidth / 2));
+        const yPos = Math.round((videoHeight * options.position.y / 100) - (watermarkWidth * 9/16 / 2));
+
+        // Build FFmpeg command for watermark overlay
+        const args2 = [
+            // Input video
+            "-i", "input.mp4",
+            // Input watermark
+            "-i", "watermark.png",
+            // Filter complex for watermark overlay
+            "-filter_complex",
+            [
+                // Scale watermark maintaining aspect ratio
+                `[1:v]scale=${watermarkWidth}:-1`,
+                // Apply opacity
+                `[watermark];[watermark]format=rgba,colorchannelmixer=aa=${options.opacity}`,
+                // Overlay with exact pixel positions
+                `[watermark1];[0:v][watermark1]overlay=${xPos}:${yPos}`
+            ].join(","),
+            // Video codec
+            "-c:v", "libx264",
+            // Audio codec (copy from input)
+            "-c:a", "aac",
+            // Preset for encoding speed
+            "-preset", "ultrafast",
+            // Output quality
+            "-crf", "23",
+            // Output file
+            "output.mp4"
+        ];
+
+        // Execute FFmpeg command
+        await ffmpeg.exec(args2);
+
+        // Read the output file
+        const outputData = await ffmpeg.readFile("output.mp4");
+
+        // Clean up
+        await ffmpeg.deleteFile("input.mp4");
+        await ffmpeg.deleteFile("watermark.png");
+        await ffmpeg.deleteFile("output.mp4");
+        await ffmpeg.deleteFile("out.txt");
+
+        // Return the processed video as a Blob
+        return new Blob([outputData], { type: "video/mp4" });
+    } catch (error) {
+        // Clean up on error
+        try {
+            await ffmpeg.deleteFile("input.mp4");
+            await ffmpeg.deleteFile("watermark.png");
+            await ffmpeg.deleteFile("output.mp4");
+            await ffmpeg.deleteFile("out.txt");
+        } catch {} // Ignore cleanup errors
+        
+        throw error; // Re-throw the original error
+    }
+}

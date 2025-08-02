@@ -17,6 +17,7 @@ model User {
   sessions      Session[]
   clipSources   ClipSource[]
   streamers     Streamer[]
+  socialAccounts SocialAccount[]
 }
 
 model Account {
@@ -83,4 +84,18 @@ model Streamer {
   @@index([userId])
   @@index([platform, username])
   @@unique([userId, platform, username])
+}
+
+model SocialAccount {
+  id        String   @id @default(cuid())
+  platform  String   // e.g., "youtube", "tiktok", "instagram", "x"
+  username  String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, platform, username])
+  @@index([userId])
 } 

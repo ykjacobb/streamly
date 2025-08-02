@@ -3,6 +3,15 @@ const nextConfig = {
   experimental: {
     allowedDevOrigins: ['dev.affrev.co'],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        pathname: '/shadcn.png',
+      },
+    ],
+  },
   async headers() {
     return [
       {

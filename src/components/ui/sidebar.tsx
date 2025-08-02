@@ -10,7 +10,10 @@ import {
     FlashSolid,
     PlaySolid,
     NavArrowLeft,
-    NavArrowRight
+    NavArrowRight,
+    User,
+    AppNotification,
+    AppNotificationSolid
 } from "iconoir-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -22,7 +25,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const sidebarItems = [
+const navigation = [
     {
         icon: HomeSimpleDoor,
         label: "Dashboard",
@@ -47,16 +50,27 @@ const sidebarItems = [
         icon: BookSolid,
         label: "Library",
         href: "/library"
+    },
+    {
+        label: "Accounts",
+        href: "/accounts",
+        icon: User,
+    },
+    {
+        icon: AppNotificationSolid,
+        label: "Watermark",
+        href: "/watermark"
     }
-];
+] as const;
 
 interface SidebarProps {
     userEmail?: string | null;
+    userName?: string | null;
 }
 
-export function Sidebar({ userEmail }: SidebarProps) {
+export function Sidebar({ userEmail, userName }: SidebarProps) {
     const pathname = usePathname();
-    const [activeTabPosition, setActiveTabPosition] = useState(0);
+    const [activeTabPosition, setActiveTabPosition] = useState<number | null>(null);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -72,10 +86,13 @@ export function Sidebar({ userEmail }: SidebarProps) {
     }, []);
 
     useEffect(() => {
-        const activeIndex = sidebarItems.findIndex((item) => pathname.startsWith(item.href));
+        const activeIndex = navigation.findIndex((item) => pathname.startsWith(item.href));
+        // Each item is 40px (h-10) + 4px margin bottom
         if (activeIndex !== -1) {
-            // Each item is 40px (h-10) + 4px margin bottom
             setActiveTabPosition(activeIndex * 44);
+        } else {
+            // No matching sidebar item (e.g., /settings) – hide indicator
+            setActiveTabPosition(null);
         }
     }, [pathname]);
 
@@ -115,13 +132,14 @@ export function Sidebar({ userEmail }: SidebarProps) {
 
                     {/* Navigation */}
                     <nav className="flex-1 p-2 relative">
-                        {/* Active tab indicator - blue line */}
-                        <div
-                            className="absolute left-0 w-1 h-8 bg-blue-600 rounded-r-full transition-transform duration-300 ease-out"
-                            style={{ transform: `translateY(${activeTabPosition + 4}px)` }}
-                        />
+                        {activeTabPosition !== null && (
+                            <div
+                                className="absolute left-0 w-1 h-8 bg-blue-600 rounded-r-full transition-transform duration-300 ease-out"
+                                style={{ transform: `translateY(${activeTabPosition + 4}px)` }}
+                            />
+                        )}
 
-                        {sidebarItems.map((item) => {
+                        {navigation.map((item) => {
                             const isActive = pathname.startsWith(item.href);
                             const Icon = item.icon;
                             return (
@@ -178,19 +196,27 @@ export function Sidebar({ userEmail }: SidebarProps) {
                         </div>
 
                         {/* Account info */}
-                        <div className="p-4">
-                            <div className="flex items-center space-x-3">
-                                <div className="w-8 h-8 rounded-full bg-white dark:bg-black flex-shrink-0" />
-                                <div className={cn(
-                                    "transition-opacity duration-300",
-                                    isCollapsed ? "hidden" : "hidden md:block"
-                                )}>
-                                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        {userEmail}
-                                    </div>
+                        <Link
+                            href="/settings"
+                            className="p-4 flex items-center space-x-3 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
+                        >
+                            <Image
+                                src="https://github.com/shadcn.png"
+                                alt="Avatar"
+                                width={32}
+                                height={32}
+                                className="rounded-full select-none flex-shrink-0"
+                                draggable={false}
+                            />
+                            <div className={cn(
+                                "transition-opacity duration-300",
+                                isCollapsed ? "hidden" : "hidden md:block"
+                            )}>
+                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    {userName || userEmail || "Settings"}
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </div>

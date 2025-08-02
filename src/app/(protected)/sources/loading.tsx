@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SourcesLoading() {
     return (
-        <div className="p-6 max-w-2xl mx-auto space-y-8">
+        <div className="space-y-8">
             <Skeleton className="h-9 w-48" />
 
             {/* Add source form skeleton */}
